@@ -1,0 +1,32 @@
+version: "2"
+services:
+  app:
+    container_name: app
+    restart: always
+    build: .
+    ports:
+      - "3000:3000"
+    links:
+      - mongodb
+  mongodb:
+        image: mongo:3.0.15
+        container_name: "mongodb"
+        restart: always
+        environment:
+          - MONGO_DATA_DIR=/data/db
+          - MONGO_LOG_DIR=/dev/null
+          - MONGODB_USER="user"
+          - MONGODB_PASS="pass"
+        volumes:
+          - "synchrone-mongo-data:/data/db"
+        networks:
+              default:
+                aliases:
+                  - content-database
+        ports:
+            - 27017:27017
+        command: mongod --smallfiles
+
+volumes:
+  synchrone-mongo-data:
+    external: true
